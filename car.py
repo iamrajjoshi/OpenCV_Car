@@ -1,7 +1,5 @@
-import numpy as np
 import cv2 as cv
-import matplotlib.pyplot as plt
-import math
+import numpy as np
 import sys
 
 def roi(image, vertices):
@@ -29,18 +27,22 @@ def process(image):
     (640, 250),
     (640,480),
     ]
-
-    gray_image = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+    
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    low = np.array([0,0,0])
+    high = np.array([179,50,100])
+    mask = cv.inRange(hsv, low,high)
+    gray_image = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
     canny_image = cv.Canny(gray_image, 100, 200)
     cropped_image = roi( canny_image, np.array([roi_vertices], np.int32))
     lines = cv.HoughLinesP(
         cropped_image,
-        rho=10,
-        theta=np.pi / 360,
-        threshold=20,
+        rho=1,
+        theta=np.pi / 180,
+        threshold=40,
         lines=np.array([]),
-        minLineLength=25,
-        maxLineGap= 75
+        minLineLength=5,
+        maxLineGap= 4
     )
     count = 0
     slope = 0
