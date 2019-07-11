@@ -1,5 +1,3 @@
-```markdown
-```
 # OpenCV Car Project #
 
 The goals of the project is to (say stuff)
