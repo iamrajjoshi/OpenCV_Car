@@ -4,7 +4,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 class Motor:
-    motorpins = {1:{'e':11,'f':15,'r':13}, 4:{'e':32,'f':24,'r':26}}
+    motorpins = {1:{'e':11,'f':13,'r':15}, 4:{'e':32,'f':26,'r':24}}
     
     def __init__(self, motor):
         self.pin = self.motorpins[motor]
@@ -29,3 +29,6 @@ class Motor:
 
     def speed(self):
         self.PWM.ChangeDutyCycle(speed)
+
+    def shutdown(self):
+        GPIO.cleanup()
