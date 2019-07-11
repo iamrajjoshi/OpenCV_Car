@@ -1,5 +1,4 @@
 ```markdown
-OpenCV_Car
 ```
 # OpenCV Car Project #
 
