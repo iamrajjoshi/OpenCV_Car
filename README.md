@@ -46,3 +46,7 @@ algorithm.py - Algorithm for Lane Detection turn detection
 #### Raspberry Pi Motor Shield ####
 
 ![Image of Raspberry Pi Motor Shield](https://github.com/rocketrunner22/OpenCV_Car/blob/master/images/shield.jpg "Raspberry Pi Motor Shield")
+
+#### Assembled Car ####
+
+![Image of Assembled Car](https://github.com/rocketrunner22/OpenCV_Car/blob/master/images/assembled.jpg "Assembled Car")
