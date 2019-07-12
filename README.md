@@ -31,7 +31,7 @@ algorithm.py - Algorithm for Lane Detection turn detection
 
 ## Hardware: ##
 
-Robot Car Chassis
+#### Robot Car Chassis ####
 
 ![Image of Robot Car Chassis](https://github.com/rocketrunner22/OpenCV_Car/blob/master/images/chassis.jpg "Robot Car Chassis")
 
