@@ -33,7 +33,5 @@ algorithm.py - Algorithm for Lane Detection turn detection
 
 Robot Car Chassis
 
-```
 ![Image of Robot Car Chassis](https://github.com/rocketrunner22/images/chassis.jpg "Robot Car Chassis")
-```
 
