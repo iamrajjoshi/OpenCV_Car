@@ -12,14 +12,16 @@ while(True):
 		left.forward(100)
 		right.forward(100)
 	if(char == 'a'):
-		left.forward(50)
-		right.stop()
+		#left.forward(50)
+		#right.stop()
+		motorAPI.Motor.left(left,right,50)
 	if(char == 's'):
-		left.stop()
-		right.stop()
+		left.reverse()
+		right.reverse()
 	if(char == 'd'):
-		right.forward(50)
-		left.stop()
+		#right.forward(50)
+		#left.stop()
+		motorAPI.Motor.left(left,right,50)
 
 left.shutdown()
 right.shutdown()
