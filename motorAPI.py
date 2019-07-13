@@ -32,6 +32,9 @@ class Motor:
         GPIO.output(self.flag['f'],GPIO.LOW)
         GPIO.output(self.flag['r'],GPIO.LOW)
 
+    def speed(self,speed):
+        self.PWM.ChangeDutyCycle(speed)
+
     def shutdown(self):
         GPIO.cleanup()
 
@@ -61,7 +64,16 @@ class Drivetrain:
         self.motor[0].forward(speed)
         self.motor[1].stop()
     
+    def speed(self, m, speed):
+        if(m == 'l'):
+            self.motor[0].speed(speed)
+        elif(m == 'r'):
+            self.motor[1].speed(speed)
+        elif(m == 'b'):
+            for i in range(len(self.motor)):
+                self.motor[i].speed(speed)
+
     def shutdown(self):
         for i in range(len(self.motor)):
             self.motor[i].shutdown()
-        
+    
