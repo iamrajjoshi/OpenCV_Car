@@ -16,8 +16,8 @@ while(True):
 		#right.stop()
 		motorAPI.Motor.left(left,right,50)
 	if(char == 's'):
-		left.reverse()
-		right.reverse()
+		left.backward(100)
+		right.backward(100)
 	if(char == 'd'):
 		#right.forward(50)
 		#left.stop()
