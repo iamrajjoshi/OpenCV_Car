@@ -3,9 +3,8 @@ from picamera import PiCamera
 import time
 import cv2
 import motorAPI
-left = motorAPI.Motor(4)
-right = motorAPI.Motor(1)
- 
+
+robot = motorAPI.Drivetrain(motorAPI.Motor(4),motorAPI.Motor(1))
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
 camera.resolution = (640, 480)
@@ -25,23 +24,19 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	cv2.imshow("Frame", image)
 	key = cv2.waitKey(1) & 0xFF
 	if(key == ord('w')):
-		left.forward(100)
-		right.forward(100	)	
+		robot.forward(100)
 	if(key == ord('a')):
-		left.forward(100)
-		right.stop()
+		robot.left()
 	if(key == ord('s')):
-		left.stop()
-		right.stop()
+		robot.reverse()
 	if(key == ord('d')):
-		right.forward(100)
-		left.stop()
+		robot.right()
+	if(key == ord('b')):
+		robot.stop()
 	# clear the stream in preparation for the next frame
 	rawCapture.truncate(0)
  
 	# if the `q` key was pressed, break from the loop
 	if key == ord("p"):
 		break
-
-left.shutdown()
-right.shutdown()
+robot.shutdown()
