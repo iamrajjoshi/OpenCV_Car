@@ -19,11 +19,15 @@ The goal of the project is to use OpenCV to enable a vehicle to autonomously nav
 
 ## Files: ##
 ```
+algorithm.py - Algorithm for Lane Detection
+```
+```
 motorAPI.py - API for interfacing to Motorshield
 ```
 ```
-algorithm.py - Algorithm for Lane Detection turn detection
+robotControl.py - Controlling the robot's movements
 ```
+
 ## Outline: ##
 
 
