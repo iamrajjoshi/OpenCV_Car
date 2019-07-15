@@ -111,7 +111,7 @@ def display_lines(frame, lines, line_color=(0, 255, 0), line_width=2):
     return line_image
 
 
-cap = cv.VideoCapture(sys.argv[1])
+cap = cv.VideoCapture(0)
 
 
 if ((cap.isOpened() == False)):

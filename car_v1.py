@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import sys
+import motorAPI
 
 def roi(image, vertices):
     mask = np.zeros_like(image)
@@ -33,7 +34,8 @@ def process(image):
     high = np.array([179,50,100])
     mask = cv.inRange(hsv, low,high)
     gray_image = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
-    canny_image = cv.Canny(gray_image, 100, 200)
+    blurred = cv.GaussianBlur(gray_image, (5, 5), 0)
+    canny_image = cv.Canny(blurred, 100, 200)
     cropped_image = roi( canny_image, np.array([roi_vertices], np.int32))
     lines = cv.HoughLinesP(
         cropped_image,
@@ -56,20 +58,27 @@ def process(image):
     line_image = draw_lines(image, lines)
     
     #configuration
-    if slope < 0:
+    if slope < -0.4:
         direction = "Turn Right"
-    elif slope > 0:
+        robot.right(35)
+    elif slope > 0.4:
         direction = "Turn Left"
+        robot.left(35)
     else:
         direction = "Keep Straight"
+        robot.forward(45)
     
     cv.putText(line_image, direction, (50,50), cv.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 1)
     cv.putText(line_image, str(slope), (50,100), cv.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 1)
     cv.imshow('Frame', line_image)
+    out.write(line_image)
     return
 
 #video to live feed
-cap = cv.VideoCapture(sys.argv[1])
+robot = motorAPI.Drivetrain(motorAPI.Motor(4),motorAPI.Motor(1))
+fourcc = cv.VideoWriter_fourcc(*'XVID')  
+out = cv.VideoWriter('output.avi',fourcc, 20.0, (640,480))
+cap = cv.VideoCapture(0)
 
 if ((cap.isOpened() == False)):
     print("Error: Video not found")
