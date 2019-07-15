@@ -5,8 +5,8 @@ import math
 
 def canny_edge_detection(frame):
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    low = np.array([102,14,210])
-    high = np.array([122,34,250])
+    low = np.array([84,30,184])
+    high = np.array([104,50,224])
     mask = cv.inRange(hsv, low,high)
     edges = cv.Canny(mask, 200, 400)
     return edges
@@ -28,7 +28,7 @@ def hough_transform(cropped_edges):
 
 def average_line(frame, line_segments):
     if line_segments is None:
-        return lane_lines
+        return
     
     height, width, _ = frame.shape
     lane_lines = []
@@ -71,7 +71,9 @@ def make_points(frame, line):
 
 def lane_detection_pipeline(frame):
     edges = canny_edge_detection(frame)
+    cv.imshow("Caed", edges)
     cropped_edges = roi(edges)
+    cv.imshow("Camered", cropped_edges)
     line_segments = hough_transform(cropped_edges)
     lane_lines = average_line(frame, line_segments)
     return lane_lines
@@ -131,23 +133,27 @@ def steering_angle(frame, lane_lines, angle, num_of_lane_lines):
     return stabilized_steering_angle
 
 def drive_robot(angle):
-	print("angle" + str(angle))
+	#print("angle" + str(angle))
 	angle = (int(angle/2))
 	if(angle) == 45: robot.forward(45)
 	elif (angle) < 45: robot.manual_drive(angle, 45)
 	else: robot.manual_drive(45 - (angle - 45), 45)
 
 robot = motorAPI.Drivetrain(motorAPI.Motor(4),motorAPI.Motor(1))
-
+stream = cv.VideoCapture(0)
 angle = 90
-for j in range(1,11):
-	frame = cv.imread('testing/image' + str(j) + '.jpg')
-	frame = cv.resize(frame,(320,240))
-	lane_lines = lane_detection_pipeline(frame)
+while(stream.isOpened()):
+    ret, frame = stream.read()
+    if ret == True:
+        frame = cv.resize(frame,(320,240))
+        lane_lines = lane_detection_pipeline(frame)
+        display_image = render_lines(frame, lane_lines, angle)
+        cv.imshow("Camera Feed", display_image)
+        angle = steering_angle(frame, lane_lines, angle, len(lane_lines))
+        drive_robot(angle)
+    if (cv.waitKey(1) & 0xFF == ord('q')):
+        break
 
-	angle = steering_angle(frame, lane_lines, angle, len(lane_lines))
-	drive_robot(angle)
-	display_image = render_lines(frame, lane_lines, angle)
-
-	cv.imshow("Camera Feed", display_image)
-	cv.waitKey(0)
+robot.shutdown()
+stream.release()
+cv.destroyAllWindows()
