@@ -43,6 +43,10 @@ class Drivetrain:
         self.motor = []
         for i in motors:
             self.motor.append(i)
+    
+    def manual_drive(self, l , r):
+        self.motor[0].forward(l)
+        self.motor[1].forward(r)
 
     def forward(self,speed):
         for i in range(len(self.motor)):
