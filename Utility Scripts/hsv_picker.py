@@ -18,8 +18,8 @@ def pick_color(event,x,y,flags,param):
         pixel = image_hsv[y,x]
 
         #HUE, SATURATION, AND VALUE (BRIGHTNESS) RANGES. TOLERANCE COULD BE ADJUSTED.
-        upper =  np.array([pixel[0] + 10, pixel[1] + 10, pixel[2] + 20])
-        lower =  np.array([pixel[0] - 10, pixel[1] - 10, pixel[2] - 20])
+        upper =  np.array([pixel[0] + 10, pixel[1] + 20, pixel[2] + 20])
+        lower =  np.array([pixel[0] - 10, pixel[1] - 20, pixel[2] - 20])
         print(lower, upper)
 
         #A MONOCHROME MASK FOR GETTING A BETTER VISION OVER THE COLORS 
@@ -35,7 +35,6 @@ def main():
     root.withdraw() #HIDE THE TKINTER GUI
     file_path = filedialog.askopenfilename(filetypes = ftypes)
     image_src = cv2.imread(file_path)
-    image_src = cv2.resize(image_src,(820,616))
     cv2.imshow("BGR",image_src)
 
     #CREATE THE HSV FROM THE BGR IMAGE

@@ -2,13 +2,14 @@ import motorAPI
 import cv2 as cv
 import numpy as np
 import math
+import time
 
 def canny_edge_detection(frame):
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    low = np.array([84,30,184])
-    high = np.array([104,50,224])
+    low = np.array([1,-5,212])
+    high = np.array([21,35,252])
     mask = cv.inRange(hsv, low,high)
-    edges = cv.Canny(mask, 200, 400)
+    edges = cv.Canny(frame, 600, 550)
     return edges
 
 def roi(edges):
@@ -71,9 +72,7 @@ def make_points(frame, line):
 
 def lane_detection_pipeline(frame):
     edges = canny_edge_detection(frame)
-    cv.imshow("Caed", edges)
     cropped_edges = roi(edges)
-    cv.imshow("Camered", cropped_edges)
     line_segments = hough_transform(cropped_edges)
     lane_lines = average_line(frame, line_segments)
     return lane_lines
@@ -117,7 +116,7 @@ def steering_angle(frame, lane_lines, angle, num_of_lane_lines):
     angle_to_mid_radian = math.atan(x_offset / y_offset)  # angle (in radian) to center vertical line
     angle_to_mid_deg = int(angle_to_mid_radian * 180.0 / math.pi)  # angle (in degrees) to center vertical line
     new_angle = angle_to_mid_deg + 90  # this is the steering angle needed by car front wheel
-
+    #return new_angle
 	
     if num_of_lane_lines == 2 :
         max_angle_deviation = 5
@@ -134,26 +133,43 @@ def steering_angle(frame, lane_lines, angle, num_of_lane_lines):
 
 def drive_robot(angle):
 	#print("angle" + str(angle))
-	angle = (int(angle/2))
-	if(angle) == 45: robot.forward(45)
-	elif (angle) < 45: robot.manual_drive(angle, 45)
-	else: robot.manual_drive(45 - (angle - 45), 45)
-
+    angle = (int(angle/3))
+    if(angle) == 45:
+        print("Go Forward")
+        #robot.forward(30)
+    elif (angle) < 30: 
+        print("Turn Left {} ML: {} MR: {}".format(str(angle),str(angle), str(30)))
+        robot.manual_drive(30, angle)
+    else: 
+        print("Turn Right {} ML: {} MR: {}".format(str(angle),str(30), str(30 - (angle - 30))))
+        robot.manual_drive(30, 30 - (angle - 30))
+    '''
+    angle = (int(angle/3))
+    if(angle) == 30: robot.forward(30)
+    elif (angle) < 30: robot.manual_drive(angle, 30)
+    else: robot.manual_drive(30 - (angle - 30), 30)
+    '''
 robot = motorAPI.Drivetrain(motorAPI.Motor(4),motorAPI.Motor(1))
 stream = cv.VideoCapture(0)
+stream.set(cv.CAP_PROP_FRAME_WIDTH, 320)
+stream.set(cv.CAP_PROP_FRAME_HEIGHT, 240)
+time.sleep(2.0)
 angle = 90
-while(stream.isOpened()):
+prev_lane_lines = []
+while((cv.waitKey(1) & 0xFF) != ord("q")):
     ret, frame = stream.read()
     if ret == True:
-        frame = cv.resize(frame,(320,240))
         lane_lines = lane_detection_pipeline(frame)
+        if lane_lines is None:
+           lane_lines = prev_lane_lines
+        #print(type(lane_lines))
         display_image = render_lines(frame, lane_lines, angle)
         cv.imshow("Camera Feed", display_image)
         angle = steering_angle(frame, lane_lines, angle, len(lane_lines))
+        #print(angle)
+        prev_lane_lines = lane_lines
         drive_robot(angle)
-    if (cv.waitKey(1) & 0xFF == ord('q')):
-        break
-
+        cv.imshow("Camera Feed", display_image)
 robot.shutdown()
 stream.release()
 cv.destroyAllWindows()
