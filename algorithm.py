@@ -5,12 +5,7 @@ import math
 import time
 
 def canny_edge_detection(frame):
-    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    low = np.array([1,-5,212])
-    high = np.array([21,35,252])
-    mask = cv.inRange(hsv, low,high)
-    edges = cv.Canny(frame, 600, 550)
-    return edges
+    return cv.Canny(frame, 600, 550)
 
 def roi(edges):
     height, width = edges.shape
