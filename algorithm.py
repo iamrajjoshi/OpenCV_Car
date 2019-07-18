@@ -128,16 +128,16 @@ def steering_angle(frame, lane_lines, angle, num_of_lane_lines):
 
 def drive_robot(angle):
 	#print("angle" + str(angle))
-    angle = (int(angle/3))
+    angle = (int(angle/2))
     if(angle) == 45:
         print("Go Forward")
         #robot.forward(30)
-    elif (angle) < 30: 
+    elif (angle) < 45: 
         print("Turn Left {} ML: {} MR: {}".format(str(angle),str(angle), str(30)))
-        robot.manual_drive(30, angle)
+        robot.manual_drive(45, angle)
     else: 
-        print("Turn Right {} ML: {} MR: {}".format(str(angle),str(30), str(30 - (angle - 30))))
-        robot.manual_drive(30, 30 - (angle - 30))
+        print("Turn Right {} ML: {} MR: {}".format(str(angle),str(45), str(45 - (angle - 45))))
+        robot.manual_drive(45, 45 - (angle - 45))
     '''
     angle = (int(angle/3))
     if(angle) == 30: robot.forward(30)
