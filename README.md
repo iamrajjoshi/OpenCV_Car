@@ -60,6 +60,3 @@ motorAPI.py - API for interfacing to Motorshield
 ## Resources: ##
 * [DeepPiCar — Part 4: Autonomous Lane Navigation via OpenCV](https://towardsdatascience.com/deeppicar-part-4-lane-following-via-opencv-737dd9e47c96)
 * [Simple Lane Detection with OpenCV](https://medium.com/@mrhwick/simple-lane-detection-with-opencv-bfeb6ae54ec0)
-* [Autonomous Racing Robot With an Arduino, a Raspberry Pi and a Pi Camera](https://becominghuman.ai/autonomous-racing-robot-with-an-arduino-a-raspberry-pi-and-a-pi-camera-3e72819e1e63)
-* [Road Lane Detection with Raspberry Pi](https://www.hackster.io/Abhinav_Abhi/road-lane-detection-with-raspberry-pi-a4711f)
-
