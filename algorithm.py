@@ -4,8 +4,11 @@ import numpy as np
 import math
 import time
 
-def canny_edge_detection(frame):
-    return cv.Canny(frame, 600, 550)
+def hsv_mask(frame):
+    return cv.inRange(cv.cvtColor(frame, cv2.COLOR_BGR2HSV), np.array([x,x,x]), np.array([x,x,x]))
+
+def canny_edge_detection(mask):
+    return cv.Canny(mask, 600, 550)
 
 def roi(edges):
     height, width = edges.shape
@@ -66,7 +69,8 @@ def make_points(frame, line):
     return [[x1, y1, x2, y2]]
 
 def lane_detection_pipeline(frame):
-    edges = canny_edge_detection(frame)
+    mask = hsv_mask(frame)
+    edges = canny_edge_detection(mask)
     cropped_edges = roi(edges)
     line_segments = hough_transform(cropped_edges)
     lane_lines = average_line(frame, line_segments)
@@ -131,19 +135,14 @@ def drive_robot(angle):
     angle = (int(angle/2))
     if(angle) == 45:
         print("Go Forward")
-        #robot.forward(30)
+        #robot.forward(90)
     elif (angle) < 45: 
-        print("Turn Left {} ML: {} MR: {}".format(str(angle),str(angle), str(30)))
-        robot.manual_drive(45, angle)
+        print("Turn Left {} ML: {} MR: {}".format(str(angle),str(angle), str(90)))
+        #robot.manual_drive(90, angle*2)
     else: 
-        print("Turn Right {} ML: {} MR: {}".format(str(angle),str(45), str(45 - (angle - 45))))
-        robot.manual_drive(45, 45 - (angle - 45))
-    '''
-    angle = (int(angle/3))
-    if(angle) == 30: robot.forward(30)
-    elif (angle) < 30: robot.manual_drive(angle, 30)
-    else: robot.manual_drive(30 - (angle - 30), 30)
-    '''
+        print("Turn Right {} ML: {} MR: {}".format(str(angle),str(90), str(90 - (angle - 90))))
+       #robot.manual_drive(90, 90 - (angle - 90))
+
 robot = motorAPI.Drivetrain(motorAPI.Motor(4),motorAPI.Motor(1))
 stream = cv.VideoCapture(0)
 stream.set(cv.CAP_PROP_FRAME_WIDTH, 320)
@@ -151,17 +150,16 @@ stream.set(cv.CAP_PROP_FRAME_HEIGHT, 240)
 time.sleep(2.0)
 angle = 90
 prev_lane_lines = []
+
 while((cv.waitKey(1) & 0xFF) != ord("q")):
     ret, frame = stream.read()
     if ret == True:
         lane_lines = lane_detection_pipeline(frame)
         if lane_lines is None:
            lane_lines = prev_lane_lines
-        #print(type(lane_lines))
         display_image = render_lines(frame, lane_lines, angle)
         cv.imshow("Camera Feed", display_image)
         angle = steering_angle(frame, lane_lines, angle, len(lane_lines))
-        #print(angle)
         prev_lane_lines = lane_lines
         drive_robot(angle)
         cv.imshow("Camera Feed", display_image)
